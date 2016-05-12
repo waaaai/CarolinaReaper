@@ -3,7 +3,7 @@ package model;
 import java.util.ArrayList;
 import java.util.Calendar;
 
-public class Event {
+public class Event  {
 	//----------Fields----------
 	private String  eventId;
 	private String eventName;
