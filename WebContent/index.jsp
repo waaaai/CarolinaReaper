@@ -5,6 +5,18 @@
 <html>
 <head>
 <meta charset=UTF-"8">
+
+<script language=javascript>
+ function view(){
+ var obj=document.getElementById('count');
+ var str="";
+ for(i=0;i<obj.value;i++){
+ str+=document.getElementById('hiddenArea').innerHTML;
+ }
+ document.getElementById('viewArea').innerHTML=str;
+ }
+ </script>
+
 <title>タイトル</title>
 <STYLE type="text/css">
  <!--
@@ -66,8 +78,7 @@
 			<input type="number" name="deadlineDayMonth" size="2"maxlength="2">月
 			<input type="number" name="deadlineDay" size="2" maxlength="2">日
 	</tr>
-	<tr>
-		<td>日程候補： <select id="count" onChange="view()">
+		<select id="count" onChange="view()">
 		<option value="1">1</option>
 		<option value="2">2</option>
 		<option value="3">3</option>
@@ -97,8 +108,8 @@
 		<option value="27">27</option>
 		<option value="28">28</option>
 		<option value="29">29</option>
-		<option value="30">30</option></select></td>
-
+		<option value="30">30</option>
+		</select>
 		<div id="hiddenArea" style="display:none;">
 	 		<td><input type="number" name="yearS"required size="4" maxlength="4">年
 			<input type="number" name="month" size="2"required maxlength="2">月
