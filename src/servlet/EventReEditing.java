@@ -1,6 +1,7 @@
 package servlet;
 
-//index.jspの画面
+//eventDatails.jsp
+//幹事用イベント編集
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -12,22 +13,20 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 
-import model.CreateAndAnnihilateEventPage;
 import model.Event;
 
 /**
- * Servlet implementation class EventCreation
+ * Servlet implementation class EventReEditing
  */
-@WebServlet("/EventCreation")
-public class EventCreation extends HttpServlet {
+@WebServlet("/EventReEditing")
+public class EventReEditing extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 
     /**
      * @see HttpServlet#HttpServlet()
      */
-    public EventCreation() {
+    public EventReEditing() {
         super();
         // TODO Auto-generated constructor stub
     }
@@ -35,10 +34,10 @@ public class EventCreation extends HttpServlet {
 	/**
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
 	 */
-/*	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		// TODO Auto-generated method stub
 		response.getWriter().append("Served at: ").append(request.getContextPath());
-	}*/
+	}
 
 	/**
 	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
@@ -47,28 +46,29 @@ public class EventCreation extends HttpServlet {
 		// TODO Auto-generated method stub
 		//doGet(request, response);
 
-		//リクエストパラメータの取得(新規イベント作成）
+		//判別用リクエストパラメータの取得
 		request.setCharacterEncoding("UTF-8");
+
+		String action = request.getParameter("action"); //判別用
+
 		String eventName = request.getParameter("eventName"); // イベント名
 		String organizarName = request.getParameter("organizarName"); // 幹事の名前
 		String eventVenueA = request.getParameter("eventVenue"); // 場所
 		String autherName = request.getParameter("autherName"); // イベント製作者の名前
 		String autherPass = request.getParameter("autherPass"); //イベント製作者の編集用パスワード
 		String autherRemarkA = request.getParameter("autherRemark"); // イベント製作者の備考欄
-		String eventOpenFlagS = request.getParameter("eventOpenFlag"); // イベントの公開フラグ.1:公開,0:非公開
+		String eventOpenFlgaS = request.getParameter("eventOpenFlga"); // イベントの公開フラグ.1:公開,0:非公開
 		String numberOfEvent = request.getParameter("numberOfEvent");//イベント会数
 		String pricePerPersonA = request.getParameter("pricePerPerson"); // イベント一人当たりの料金
 
 		String deadlineDayYearS = request.getParameter("deadlineYear"); // 締切日　年
-		String deadlineDayMonthS = request.getParameter("deadlineDayMonth"); //締切日　
+		String deadlineDayMonthS = request.getParameter("deadlineDayMonth"); //締切日　月
 		String deadlineDateS = request.getParameter("deadlineDay"); //締切日　日
-
 
 		String[] yearS = request.getParameterValues("year"); // 年 日程候補日
 		String[] monthS = request.getParameterValues("month"); // 月　日程候補日
 		String[] dateS = request.getParameterValues("day"); // 日　日程候補日
 		String[] hourS = request.getParameterValues("hour"); // 時間
-
 
 
 		//イベントの場所
@@ -90,8 +90,16 @@ public class EventCreation extends HttpServlet {
 		Calendar  registDay = Calendar.getInstance();
 
 
+		//締め切り日時Stringからintへ
+		int deadlineDayYear = Integer.parseInt(deadlineDayYearS);
+		int deadlineDayMonth= Integer.parseInt(deadlineDayMonthS);
+		int deadlineDate = Integer.parseInt(deadlineDateS);
+
 		//締切日
 		Calendar deadlineDay = Calendar.getInstance();
+		Event.setYear(deadlineDay,deadlineDayYear);
+		Event.setMonth(deadlineDay, deadlineDayMonth);
+		Event.setDate(deadlineDay, deadlineDate);
 
 
 		//確定日時
@@ -103,41 +111,36 @@ public class EventCreation extends HttpServlet {
 
 
 		//イベント公開・非公開
-		int eventOpenFlag = Integer.parseInt(eventOpenFlagS);
+		int eventOpenFlga = Integer.parseInt(eventOpenFlgaS);
 
 
 		//URL
-		String eventUrl = "NO DATA";
+		String eventUrl = "";
 
 
 		//イベントページファイルの名前
-		String eventPageFileName = "NO DATA";
+		String eventPageFileName = "";
 
 
 		//候補日
 		ArrayList<Calendar> candidate = new ArrayList<Calendar>();
 
 
-		//Eventインスタンスの生成
+		// インスタンスの生成
 		Event event = new Event(eventName, organizarName, eventVenue,
-			registDay, autherName, autherPass, deadlineDay,
-			autherRemark, determinedDay, determinedFlag, eventOpenFlag,
-			numberOfEvent, eventUrl, eventPageFileName, pricePerPerson,
-			candidate);
+				registDay, autherName, autherPass, deadlineDay,
+				autherRemark, determinedDay, determinedFlag, eventOpenFlga,
+				numberOfEvent, eventUrl, eventPageFileName, pricePerPerson, candidate);
+
 
 		//候補日
-		for (int i = 1; i < yearS.length; i++){
-
-			String a = yearS[i];
-			String b = monthS[i];
-			String c = dateS[i];
-			String d = hourS[i];
+		for (int i = 0; i < yearS.length; i++){
 
 			//候補日Stringからintへ
-			int year = Integer.parseInt(a);
-			int month= Integer.parseInt(b);
-			int date = Integer.parseInt(c);
-			int hour = Integer.parseInt(d);
+			int year = Integer.parseInt(yearS[i]);
+			int month= Integer.parseInt(monthS[i]);
+			int date = Integer.parseInt(dateS[i]);
+			int hour = Integer.parseInt(hourS[i]);
 
 			month -= 1;
 
@@ -153,48 +156,24 @@ public class EventCreation extends HttpServlet {
 		}
 
 
-		//締め切り日時Stringからintへ
-		int deadlineDayYear = Integer.parseInt(deadlineDayYearS);
-		int deadlineDayMonth= Integer.parseInt(deadlineDayMonthS);
-		int deadlineDate = Integer.parseInt(deadlineDateS);
-		deadlineDayMonth -= 1;
+		if (action == null) { //決定が選択された
+
+			// DAO（変更用）
+
+			// フォワード
+			RequestDispatcher dispatcher = request.getRequestDispatcher("/WEB-INF/jsp/eventEdit.jsp");
+			dispatcher.forward(request, response);
 
 
-		//締切日をセット
-		event.setDeadlineYear(deadlineDayYear);
-		event.setDeadlineMonth(deadlineDayMonth);
-		event.setDeadlineDate(deadlineDate);
+		}else if (action.equals("delete")){ //削除が選択された
+
+			//DAO(削除用)
 
 
-		//URL
-		CreateAndAnnihilateEventPage.createEventPageUrl(event);
-
-
-		//セッションスコープに保存
-		HttpSession session = request.getSession();
-		session.setAttribute("event",event);
-
-
-
-/*		//DAOの利用
-		try{
-			EventDAO eventDao = new EventDAO;
-			ArrayList<EventDto> table = dao.findAll();
-
-			request.setAttribute("table", table);
-			request.getRequestDispatcher("アドレス").forward(request, response);
-		} catch(Expention e){
-			throw new ServletException(e);
+			//HOMEに移動（自動的に）フォワード
+			RequestDispatcher dispatcher = request.getRequestDispatcher("/WebContent/index.jsp");
+			dispatcher.forward(request, response);
 		}
-*/
-
-
-		//フォワード(イベント作成決定後のページ）
-		RequestDispatcher dispatcher = request.getRequestDispatcher("/WEB-INF/jsp/eventconfirmed.jsp");
-		dispatcher.forward(request, response);
-
-
 	}
-
 
 }

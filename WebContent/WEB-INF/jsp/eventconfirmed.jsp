@@ -49,9 +49,9 @@ Event redpepper = (Event) session.getAttribute("event");
 		<tr>
 		<th></th>
 		<td><%= Event.getYear(redpepper.getCandidateElement(i)) %>年
-		<td><%= Event.getMonth(redpepper.getCandidateElement(i))+1 %>月
-		<td><%= Event.getDate(redpepper.getCandidateElement(i)) %>日
-		<td><%= Event.getHour(redpepper.getCandidateElement(i)) %>時</td>
+		<%= Event.getMonth(redpepper.getCandidateElement(i))+1 %>月
+		<%= Event.getDate(redpepper.getCandidateElement(i)) %>日
+		<%= Event.getHour(redpepper.getCandidateElement(i)) %>時</td>
 		</tr>
 	<% } %>
 	 <tr>
@@ -61,6 +61,6 @@ Event redpepper = (Event) session.getAttribute("event");
 
 </table>
 <p>URLを表示します
-<a href=""></a></p>
+<a><%= redpepper.getEventUrl() %>></a></p>
 </body>
 </html>
